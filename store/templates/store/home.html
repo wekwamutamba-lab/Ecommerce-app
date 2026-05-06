@@ -1,0 +1,86 @@
+{% extends 'store/base.html' %}
+{% block title %}Arthaus — Original Artworks{% endblock %}
+
+{% block content %}
+<div class="container">
+
+
+    <div style="padding: 4.5rem 0 3.5rem; border-bottom: 1px solid var(--border); margin-bottom: 3rem;">
+        <p style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 1rem;">
+            <i class="fa-solid fa-circle-dot icon" style="font-size: 0.6rem; margin-right: 6px;"></i>
+            Curated Collection
+        </p>
+        <h1 style="font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 500; line-height: 1.18; letter-spacing: -0.5px; color: var(--text); max-width: 580px; margin-bottom: 1.25rem;">
+            Original artworks,<br>thoughtfully chosen.
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--muted); max-width: 460px; line-height: 1.75; margin-bottom: 2rem;">
+            Arthaus is a curated gallery of original paintings, prints, and mixed media works. Every piece is selected for its craft, character, and the story it carries into your space.
+        </p>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="{% url 'product_list' %}" class="btn btn-dark">
+                Browse the gallery
+                <i class="fa-solid fa-arrow-right" style="color: rgba(247,245,242,0.7); font-size: 0.75rem;"></i>
+            </a>
+            <button onclick="document.getElementById('about-modal').classList.add('open')" class="btn btn-outline" style="gap:6px;">
+                <i class="fa-regular fa-circle-question icon" style="font-size:0.8rem;"></i>
+                How it works
+            </button>
+        </div>
+    </div>
+
+    
+    {% if featured_products %}
+    <div class="section-head">
+        <div>
+            <div class="section-title">Featured Works</div>
+            <div class="section-sub">Handpicked from the collection</div>
+        </div>
+        <a href="{% url 'product_list' %}" class="btn btn-outline btn-sm">
+            View all
+            <i class="fa-solid fa-arrow-right icon" style="font-size:0.72rem;"></i>
+        </a>
+    </div>
+
+    <div class="product-grid">
+        {% for product in featured_products %}
+        <div class="product-card">
+            <div class="product-card-img">
+                <img src="{{ product.image_url|default:'https://picsum.photos/seed/art'|add:forloop.counter0|stringformat:'s'|add:'/400/300' }}" alt="{{ product.name }}">
+                {% if product.badge %}
+                    <span class="product-badge badge-{{ product.badge }}">{{ product.badge }}</span>
+                {% endif %}
+            </div>
+            <div class="product-card-body">
+                {% if product.category %}
+                    <div class="product-cat">{{ product.category.name }}</div>
+                {% endif %}
+                <div class="product-name">{{ product.name }}</div>
+                <p class="product-desc">{{ product.description|truncatechars:68 }}</p>
+                <div class="product-foot">
+                    <div>
+                        <span class="product-price">${{ product.price }}</span>
+                        {% if product.original_price %}
+                            <span class="product-orig" style="margin-left:5px;">${{ product.original_price }}</span>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-dark btn-sm">
+                        <i class="fa-solid fa-plus" style="color:rgba(247,245,242,0.7); font-size:0.68rem;"></i>
+                        Add
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty">
+        <i class="fa-regular fa-image"></i>
+        <h3>No featured works yet</h3>
+        <p>Add products in the admin and mark them as featured.</p>
+        <a href="/admin/" class="btn btn-outline btn-sm">Open admin</a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

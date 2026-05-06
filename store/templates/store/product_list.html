@@ -1,0 +1,82 @@
+{% extends 'store/base.html' %}
+{% block title %}Products — MyShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="section-header">
+        <div>
+            <div class="section-title">
+                {% if search_query %}
+                    Results for "{{ search_query }}"
+                {% else %}
+                    All Products
+                {% endif %}
+            </div>
+            <div class="section-subtitle">{{ products|length }} item{{ products|length|pluralize }} found</div>
+        </div>
+    </div>
+
+    
+    <div class="filter-bar">
+        <a href="{% url 'product_list' %}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}"
+           class="filter-pill {% if not selected_category %}active{% endif %}">All</a>
+        {% for category in categories %}
+        <a href="?category={{ category.slug }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+           class="filter-pill {% if selected_category == category.slug %}active{% endif %}">
+            {{ category.name }}
+        </a>
+        {% endfor %}
+    </div>
+
+    
+    {% if products %}
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <div class="product-card-image">
+                <img src="{{ product.image_url|default:'https://picsum.photos/400/300' }}" alt="{{ product.name }}">
+                {% if product.badge %}
+                    <span class="product-badge badge-{{ product.badge }}">{{ product.badge }}</span>
+                {% endif %}
+                {% if not product.in_stock %}
+                    <div class="out-of-stock-overlay">Out of Stock</div>
+                {% endif %}
+            </div>
+            <div class="product-card-body">
+                {% if product.category %}
+                    <div class="product-category-label">{{ product.category.name }}</div>
+                {% endif %}
+                <div class="product-name">{{ product.name }}</div>
+                <p class="product-desc">{{ product.description|truncatechars:75 }}</p>
+                <div class="product-price-row">
+                    <div>
+                        <span class="product-price">${{ product.price }}</span>
+                        {% if product.discount_percent %}
+                            <span class="product-discount">-{{ product.discount_percent }}%</span>
+                        {% endif %}
+                        {% if product.original_price %}
+                            <br><span class="product-original-price">${{ product.original_price }}</span>
+                        {% endif %}
+                    </div>
+                    {% if product.in_stock %}
+                        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-sm">Add →</a>
+                    {% else %}
+                        <span class="btn btn-outline btn-sm" style="opacity:0.5; cursor:default;">Sold Out</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">🔍</div>
+        <h3>No products found</h3>
+        <p>Try adjusting your search or filter.</p>
+        <a href="{% url 'product_list' %}" class="btn btn-primary">Clear filters</a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

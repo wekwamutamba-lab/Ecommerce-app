@@ -1,0 +1,31 @@
+{% extends 'store/base.html' %}
+{% block title %}Order Confirmed! — MyShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="success-page">
+        <div class="success-checkmark"></div>
+        <h1 style="font-size:1.75rem; font-weight:800; letter-spacing:-0.5px; margin-bottom:0.5rem;">
+            Order Confirmed!
+        </h1>
+        <p style="color:var(--clr-muted); font-size:1rem; margin-bottom:2rem;">
+            Hey <strong>{{ name }}</strong>, your order is on its way.<br>
+            A receipt has been sent to <strong>{{ email }}</strong>.
+        </p>
+
+    
+        <div style="background:var(--clr-surface); border:1px solid var(--clr-border); border-radius:var(--radius-lg); padding:1.5rem; text-align:left; margin-bottom:2rem;">
+            <div class="summary-row">
+                <span style="color:var(--clr-muted);">Items ordered</span>
+                <span>{{ item_count }}</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total charged</span>
+                <span>${{ order_total }}</span>
+            </div>
+        </div>
+
+        <a href="{% url 'product_list' %}" class="btn btn-primary">Continue Shopping →</a>
+    </div>
+</div>
+{% endblock %}

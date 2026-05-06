@@ -1,0 +1,85 @@
+{% extends 'store/base.html' %}
+{% block title %}Checkout — MyShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="section-title" style="margin-bottom:1.5rem;">Checkout</div>
+
+    <div class="checkout-layout" style="display:grid; grid-template-columns:1fr 360px; gap:2rem; align-items:start;">
+
+        
+        <div style="background:var(--clr-surface); border:1px solid var(--clr-border); border-radius:var(--radius-lg); padding:2rem;">
+            <h3 style="font-size:1rem; font-weight:700; margin-bottom:1.5rem; padding-bottom:0.75rem; border-bottom:1px solid var(--clr-border);">
+                <i class="fa-solid fa-box-check checkout-icon"></i>Delivery Information
+            </h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Jane Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email" class="form-control" placeholder="jane@example.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Delivery Address</label>
+                    <input type="text" name="address" class="form-control" placeholder="123 Main Street, City, Country" required>
+                    <p class="form-hint">We'll send your order confirmation to your email.</p>
+                </div>
+
+                <h3 style="font-size:1rem; font-weight:700; margin:1.5rem 0 1rem; padding-top:1rem; border-top:1px solid var(--clr-border);">
+                    <i class="fa-solid fa-credit-card checkout-icon"></i>Payment Details
+                </h3>
+                <div class="form-group">
+                    <label class="form-label">Card Number</label>
+                    <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" disabled>
+                    <p class="form-hint"><i class="fa-solid fa-lock checkout-note-icon"></i>Demo mode — no real payment processed</p>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Expiry</label>
+                        <input type="text" class="form-control" placeholder="MM/YY" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CVV</label>
+                        <input type="text" class="form-control" placeholder="123" disabled>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full" style="padding:14px; font-size:1rem; margin-top:0.5rem;">
+                    Place Order — ${{ order_total }}
+                </button>
+            </form>
+        </div>
+
+        
+        <div class="summary-card">
+            <h3>Your Order</h3>
+            {% for item in cart_items %}
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.6rem; gap:8px;">
+                <span style="color:var(--clr-muted);">{{ item.name }} <strong>×{{ item.quantity }}</strong></span>
+                <span style="font-weight:500;">${{ item.item_total }}</span>
+            </div>
+            {% endfor %}
+            <div style="height:1px; background:var(--clr-border); margin:1rem 0;"></div>
+            <div class="summary-row">
+                <span>Subtotal</span><span>${{ subtotal }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping</span>
+                {% if shipping == 0 %}<span class="free-shipping">FREE</span>{% else %}<span>${{ shipping }}</span>{% endif %}
+            </div>
+            <div class="summary-row total">
+                <span>Total</span><span>${{ order_total }}</span>
+            </div>
+            <div style="margin-top:1.25rem; padding:0.75rem; background:var(--clr-accent-soft); border-radius:var(--radius-sm); font-size:0.8rem; color:var(--clr-accent);">
+                <i class="fa-solid fa-lock checkout-note-icon"></i>Your data is encrypted and never stored.
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
